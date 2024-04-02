@@ -1,20 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import * as Permissions from 'expo-permissions';
+import * as MediaLibrary from 'expo-media-library'
+import { useEffect } from 'react';
+import Screen from './app/components/Screen';
+import AppButton from './app/components/AppButton';
+import LoginScreen from './app/screens/LoginScreen';
+import RegisterScreen from './app/screens/RegisterScreen';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import AuthNavigation from './app/navigation/AuthNavigation';
+import ImagesDisplay from './app/components/ImagesDisplay';
+import ImageListings from './app/components/ImageListings';
+import AppNavigator from './app/navigation/AppNavigator';
+import AccountImage from './app/components/AccountImage';
+import AccountScreen from './app/screens/AccountScreen';
+import GetMediaPhotos from './app/components/GetMediaPhotos';
+import GetImagesByDate from './app/components/GetImagesByDate';
+import SearchInput from './app/components/SearchInput'
+
 
 export default function App() {
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
