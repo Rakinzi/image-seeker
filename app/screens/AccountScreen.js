@@ -1,9 +1,10 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
+import React, { useContext } from 'react'
 import AccountImage from '../components/AccountImage'
 import routes from '../navigation/routes'
 import ListItem from '../components/ListItem'
 import ListItemSeparator from '../components/ListItemSeparator'
+import AuthContext from '../auth/context'
 const menuItems = [
     {
         title: "Account",
@@ -11,7 +12,9 @@ const menuItems = [
             name: 'format-list-bulleted',
             backgroundColor: colors.primary
         },
-        targetScreen: routes.ACCOUNT
+        onPress: (navigation) => {
+            navigation.navigate(routes.ACCOUNT)
+        },
     },
     {
         title: "Settings",
@@ -19,7 +22,9 @@ const menuItems = [
             name: 'email',
             backgroundColor: colors.secondary
         },
-        targetScreen: routes.SETTINGS
+        onPress: (navigation) => {
+            navigation.navigate(routes.SETTINGS)
+        },
     },
     {
         title: "Log Out",
@@ -27,14 +32,19 @@ const menuItems = [
             name: 'email',
             backgroundColor: colors.secondary
         },
-        targetScreen: 'Messages'
+        onPress: (navigation) => {
+
+        }
     }
 ]
 
 export default function AccountScreen({ navigation }) {
+    const authContext = useContext(AuthContext)
+
+    const user = authContext.user
     return (
         <>
-            <AccountImage username={'Rakinzi Silver'} email={'silverrakinzi@gmail.com'} />
+            <AccountImage username={user.username} email={user.email} />
             <View style={styles.container}>
                 <FlatList
                     data={menuItems}
@@ -43,7 +53,18 @@ export default function AccountScreen({ navigation }) {
                     renderItem={({ item }) => (
                         <ListItem
                             title={item.title}
-                            onPress={() => navigation.navigate(item.targetScreen)}
+                            onPress={() => {
+                                if (item.title == 'Log Out') {
+                                    Alert.alert('Log Out', 'Are you sure you want to log out ?', [
+
+                                        { text: 'Yes', onPress: () => authContext.setUser(null) },
+                                        { text: "No" }
+
+                                    ])
+
+                                }
+                                item.onPress(navigation)
+                            }}
                         />
                     )}
 

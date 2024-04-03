@@ -5,12 +5,12 @@ import MaterialIcon from './MaterialIcon'
 import AppText from './AppText'
 import colors from '../config/colors'
 
-export default function AccountImage({ imageUri, onChangeImage, username, email }) {
+export default function AccountImage({ imageUri, onChangeImage, username, email, name = 'person' }) {
     return (<>
         <TouchableOpacity>
             <View style={styles.container}>
                 {!imageUri && (
-                    <MaterialIcon name={'camera'} size={75} style={styles.icon} color={colors.white} />
+                    <MaterialIcon name={name} size={75} style={styles.icon} color={colors.white} />
                 )}
                 {imageUri && (
                     <Image style={styles.image} />

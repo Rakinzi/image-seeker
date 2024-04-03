@@ -12,6 +12,7 @@ export default Object.freeze({
     SETTINGS: 'Settings',
     PHOTOS: 'Photos',
     ALBUMS: 'Albums',
-    FAVORITES: 'For You'
+    FAVORITES: 'For You',
+    LOG_OUT: 'Log Out'
 
 })

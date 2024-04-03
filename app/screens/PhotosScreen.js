@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FlatList, StyleSheet, Text, View, RefreshControl } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
-import ImageListings from './ImageListings';
-import Screen from './Screen';
-import SearchButton from './SearchInput';
-import colors from '../config/colors';
+import ImageListings from '../components/ImageListings';
+import Screen from '../components/Screen';
+import SearchButton from '../components/SearchInput';
 
-export default function GetImagesByDate() {
+
+export default function PhotosScreen() {
     const [groupedAssets, setGroupedAssets] = useState({});
     const [refreshing, setRefreshing] = useState(false);
 
@@ -53,10 +53,11 @@ export default function GetImagesByDate() {
     };
 
     return (
-        <Screen style={styles.container}>
+        <Screen>
             <SearchButton handleSearch={(text) => console.log(text)} />
             <FlatList
                 data={Object.entries(groupedAssets)}
+                style={styles.container}
                 renderItem={renderAlbum}
                 keyExtractor={(item) => item[0]} // Use date as key
                 refreshControl={
@@ -74,7 +75,6 @@ export default function GetImagesByDate() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 10,
         backgroundColor: colors.light,
     },

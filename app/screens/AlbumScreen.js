@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, RefreshControl, FlatList, TouchableOpacity } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
-import ImageListings from './ImageListings';
-import defaultStyles from '../config/styles';
-import Screen from './Screen';
-import SearchButton from './SearchInput';
-import colors from '../config/colors';
-import AppText from './AppText';
+import Screen from '../components/Screen';
+import SearchButton from '../components/SearchInput';
+import AppText from '../components/AppText';
+import defaultStyles from '../config/styles'
+import ImageListings from '../components/ImageListings';
+
 
 export default function GetMediaPhotos({ navigation }) {
     const [albums, setAlbums] = useState(null);
