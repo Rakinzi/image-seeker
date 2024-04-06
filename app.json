@@ -19,12 +19,19 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.rakinzi.imageseeker"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./app/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f122ca57-92ca-4458-8148-b07dcbab9666"
+      }
+    },
+    "owner": "rakinzi"
   }
 }

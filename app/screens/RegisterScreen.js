@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Alert } from 'react-native'
 import React, { useState, useContext } from 'react'
 import Screen from '../components/Screen'
 import AppButton from '../components/AppButton'
@@ -7,33 +7,68 @@ import AppText from '../components/AppText'
 import routes from '../navigation/routes'
 import AuthContext from '../auth/context'
 import ErrorMessage from '../components/ErrorMessage'
+import auth from '../api/auth'
 
 export default function RegisterScreen({ navigation }) {
     const [email, setEmail] = useState('')
-    const [userName, setUserName] = useState('')
+    const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [registerError, setRegisterError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const authContext = useContext(AuthContext)
 
-    const handleRegister = async ({ navigation }) => {
-        if (email === '' || password === '' || userName === '', confirmPassword === '') {
+    const validateForms = () => {
+        if (email === '' || password === '' || username === '', confirmPassword === '') {
             setErrorMessage("Please Fill In all your details")
+            setRegisterError(true)
+            return true
+        }
+
+        if (password !== confirmPassword) {
+            setErrorMessage('Passwords do not match')
+            setRegisterError(true)
+            return true
+        }
+
+        if (password.length < 6) {
+            setErrorMessage('The password should be at least 6 characters')
+            setRegisterError(true)
+            return true
+        }
+
+        if ((!/\S+@\S+\.\S+/.test(email))) {
+            setErrorMessage('Invalid email')
+            setRegisterError(true)
+            return true
+        }
+    }
+
+    const handleRegister = async () => {
+        if (validateForms()) {
+            return
+        }
+
+
+        const { data, ok } = await auth.register(email, password, username)
+        if (!ok || !data.success) {
+            message = data.message
+            console.log(data)
+            if (message == null || message == '' || message == undefined) {
+                setErrorMessage('Error occurred while registering')
+                setRegisterError(true)
+                return
+            }
+            setErrorMessage(data.message)
+            console.log(data.message)
             setRegisterError(true)
             return
         }
 
-        const { data, ok } = await auth.login(email, password)
-        if (!ok || !data.success) {
-            setErrorMessage(data.message)
-            console.log(data.message)
-            setLoginError(true)
-            return
-        }
+        Alert.alert('Success', 'You have been registered successfully click ok to get redirected to the login page', [
+            { text: 'Okay', onPress: () => navigation.navigate(routes.LOGIN) },
+        ])
 
-        alert('You have been registered successfully. Now Log in using your registered credentials')
-        navigation.navigate(routes.LOGIN)
 
     }
     return (
@@ -45,7 +80,7 @@ export default function RegisterScreen({ navigation }) {
                 autoCapitalize="none"
                 name={'username'}
                 onChangeText={(text) => {
-                    setUserName(text)
+                    setUsername(text)
                     setRegisterError(false)
                 }}
             />

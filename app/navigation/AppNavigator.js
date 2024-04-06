@@ -4,10 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import ImageListings from '../components/ImageListings'
 import MaterialIcon from '../components/MaterialIcon'
 import AccountScreen from '../screens/AccountScreen'
-import GetImagesByDate from '../components/GetImagesByDate'
 import routes from './routes'
 import AlbumScreen from '../screens/AlbumScreen'
-import GetMediaPhotos from '../screens/AlbumScreen'
 import PhotosScreen from '../screens/PhotosScreen'
 
 const Tab = createBottomTabNavigator()
