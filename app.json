@@ -4,10 +4,10 @@
     "slug": "image-seeker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./api/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./api/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
