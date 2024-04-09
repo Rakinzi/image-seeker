@@ -10,6 +10,7 @@ import AuthContext from '../auth/context'
 import apiClient from '../api/client'
 import auth from '../api/auth'
 import authStorage from '../auth/authStorage'
+import supabase from '../api/supabase'
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('')
@@ -24,7 +25,7 @@ export default function LoginScreen({ navigation }) {
             setEmail('')
             setPassword('')
             setLoginError(true)
-            return
+            return 1
         }
 
         if (!/\S+@\S+\.\S+/.test(email)) {
@@ -32,35 +33,47 @@ export default function LoginScreen({ navigation }) {
             setEmail('')
             setPassword('')
             setLoginError(true)
-            return
+            return 1
         }
 
     }
 
     const handleLogin = async () => {
-        validateForms()
-        const { data, ok } = await auth.login(email, password)
-        if (!ok || !data.success) {
-            message = data.message
-            if (message == null || message == '' || message == undefined) {
-                setErrorMessage('Error occurred while registering')
-                setLoginError(true)
-                return
-            }
-            setErrorMessage(data.message)
-            console.log(data.message)
+        if (validateForms()) return
+
+        const { data: { session }, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        })
+
+        if (error) {
+            setErrorMessage(error.message)
             setLoginError(true)
             return
         }
 
+        if (session) {
+            const { data: profile, error } = await supabase.from('users').select('*').eq('id', session.user.id)
 
-        user = data.user
-        console.log(user)
-        setEmail('')
-        setPassword('')
-        authContext.setUser(user)
-        authStorage.storeToken(user)
+            if (error) {
+                setErrorMessage(error.message)
+                setLoginError(true)
+                setEmail('')
+                setPassword('')
+                return
+            }
 
+            if (profile) {
+                user_data = {
+                    email,
+                    profile
+                }
+                authContext.setUser(user_data)
+                authStorage.storeToken(user_data)
+                setEmail('')
+                setPassword('')
+            }
+        }
     }
 
     const handleRegister = () => {

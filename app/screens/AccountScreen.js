@@ -1,10 +1,12 @@
 import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import AccountImage from '../components/AccountImage'
 import routes from '../navigation/routes'
 import ListItem from '../components/ListItem'
 import ListItemSeparator from '../components/ListItemSeparator'
 import AuthContext from '../auth/context'
+import authStorage from '../auth/authStorage'
+import supabase from '../api/supabase'
 const menuItems = [
     {
         title: "Account",
@@ -41,10 +43,22 @@ const menuItems = [
 export default function AccountScreen({ navigation }) {
     const authContext = useContext(AuthContext)
 
-    const user = authContext.user
+    const user = JSON.parse(authContext.user)
+
+    useEffect(() => {
+        token = authStorage.getToken()
+        console.log(token)
+        console.log(user)
+    })
+
+    const handleLogOut = () => {
+        authContext.setUser(null)
+        authStorage.deleteToken()
+        supabase.auth.signOut()
+    }
     return (
         <>
-            <AccountImage username={user.username} email={user.email} />
+            <AccountImage username={user.profile[0].username} email={user.email} />
             <View style={styles.container}>
                 <FlatList
                     data={menuItems}
@@ -57,7 +71,7 @@ export default function AccountScreen({ navigation }) {
                                 if (item.title == 'Log Out') {
                                     Alert.alert('Log Out', 'Are you sure you want to log out ?', [
 
-                                        { text: 'Yes', onPress: () => authContext.setUser(null) },
+                                        { text: 'Yes', onPress: () => handleLogOut() },
                                         { text: "No" }
 
                                     ])

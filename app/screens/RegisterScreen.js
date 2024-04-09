@@ -8,6 +8,8 @@ import routes from '../navigation/routes'
 import AuthContext from '../auth/context'
 import ErrorMessage from '../components/ErrorMessage'
 import auth from '../api/auth'
+import authStorage from '../auth/authStorage'
+import supabase from '../api/supabase'
 
 export default function RegisterScreen({ navigation }) {
     const [email, setEmail] = useState('')
@@ -19,7 +21,7 @@ export default function RegisterScreen({ navigation }) {
     const authContext = useContext(AuthContext)
 
     const validateForms = () => {
-        if (email === '' || password === '' || username === '', confirmPassword === '') {
+        if (email === '' || password === '' || confirmPassword === '' || username === '') {
             setErrorMessage("Please Fill In all your details")
             setRegisterError(true)
             return true
@@ -49,25 +51,42 @@ export default function RegisterScreen({ navigation }) {
             return
         }
 
+        const {
+            data: { session },
+            error
+        } = await supabase.auth.signUp({
+            email: email,
+            password: password
+        })
 
-        const { data, ok } = await auth.register(email, password, username)
-        if (!ok || !data.success) {
-            message = data.message
-            console.log(data)
-            if (message == null || message == '' || message == undefined) {
-                setErrorMessage('Error occurred while registering')
-                setRegisterError(true)
-                return
-            }
-            setErrorMessage(data.message)
-            console.log(data.message)
-            setRegisterError(true)
-            return
-        }
 
-        Alert.alert('Success', 'You have been registered successfully click ok to get redirected to the login page', [
-            { text: 'Okay', onPress: () => navigation.navigate(routes.LOGIN) },
+        if (error) return Alert.alert('Error', error.message, [
+            { text: 'Okay' }
         ])
+
+
+        if (session) {
+            const { data: profile, error } = await supabase.from('users').insert({ id: session.user.id, username: username }, { returning: 'minimal' }).select()
+
+            if (error) {
+                setRegisterError(error.message)
+                setEmail('')
+                setUsername('')
+                setPassword('')
+                setConfirmPassword('')
+            }
+
+
+            if (profile) {
+                var user_data = {
+                    email,
+                    profile
+                }
+                authContext.setUser(user_data)
+                authStorage.storeToken(user_data)
+                navigation.navigate(routes.HOME)
+            }
+        }
 
 
     }
@@ -83,6 +102,7 @@ export default function RegisterScreen({ navigation }) {
                     setUsername(text)
                     setRegisterError(false)
                 }}
+                value={username}
             />
             <AppTextInput
                 icon={'email'}
@@ -94,6 +114,7 @@ export default function RegisterScreen({ navigation }) {
                     setEmail(text)
                     setRegisterError(false)
                 }}
+                value={email}
             />
             <AppTextInput
                 icon={'lock'}
@@ -107,6 +128,7 @@ export default function RegisterScreen({ navigation }) {
                     setPassword(text)
                     setRegisterError(false)
                 }}
+                value={password}
             />
             <AppTextInput icon={'lock'}
                 placeholder={'Confirm Password'}
@@ -115,6 +137,7 @@ export default function RegisterScreen({ navigation }) {
                 autoCapitalize="none"
                 secureTextEntry
                 name={'confirm-password'}
+                value={confirmPassword}
                 onChangeText={(text) => {
                     setConfirmPassword(text)
                     setRegisterError(false)

@@ -7,6 +7,7 @@ import AccountScreen from '../screens/AccountScreen'
 import routes from './routes'
 import AlbumScreen from '../screens/AlbumScreen'
 import PhotosScreen from '../screens/PhotosScreen'
+import ImageUpload from '../screens/FavouritesScreen'
 
 const Tab = createBottomTabNavigator()
 
@@ -15,7 +16,7 @@ const AppNavigator = () => {
         <Tab.Navigator>
             <Tab.Screen name={routes.PHOTOS} component={PhotosScreen} options={{ headerShown: false, tabBarIcon: ({ color, size }) => (<MaterialIcon name={'photo'} size={size} color={color} />) }} />
             <Tab.Screen name={routes.ALBUMS} component={AlbumScreen} options={{ headerShown: false, tabBarIcon: ({ color, size }) => (<MaterialIcon name={'folder'} size={size} color={color} />) }} />
-            <Tab.Screen name={routes.FAVORITES} component={ImageListings} options={{ headerShown: false, tabBarIcon: ({ color, size }) => (<MaterialIcon name={'favorite'} size={size} color={color} />) }} />
+            <Tab.Screen name={routes.FAVORITES} component={ImageUpload} options={{ headerShown: false, tabBarIcon: ({ color, size }) => (<MaterialIcon name={'favorite'} size={size} color={color} />) }} />
             <Tab.Screen name={routes.ACCOUNT} component={AccountScreen} options={{ tabBarIcon: ({ color, size }) => (<MaterialIcon name={'person'} size={size} color={color} />) }} />
         </Tab.Navigator>
     )
